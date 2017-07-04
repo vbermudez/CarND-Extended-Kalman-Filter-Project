@@ -21,6 +21,10 @@ public:
   */
   virtual ~FusionEKF();
 
+  void Initialize(const MeasurementPackage &measurement_pack);
+  void Predict(const MeasurementPackage &measurement_pack);
+  void Update(const MeasurementPackage &measurement_pack);
+
   /**
   * Run the whole flow of the Kalman Filter from here.
   */
@@ -43,7 +47,7 @@ private:
   Eigen::MatrixXd R_laser_;
   Eigen::MatrixXd R_radar_;
   Eigen::MatrixXd H_laser_;
-  Eigen::MatrixXd Hj_;
+  // Eigen::MatrixXd Hj_;
   double noise_ax_;
   double noise_ay_;
 };

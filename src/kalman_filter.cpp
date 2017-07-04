@@ -43,14 +43,29 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   TODO:
     * update the state by using Extended Kalman Filter equations
   */
-  double rho = sqrt( x_(0) * x_(0) + x_(1) * x_(1) );
-  double theta = atan( x_(1) / x_(0) );
-  double rho_dot = ( x_(0) * x_(2) + x_(1) * x_(3) ) / rho;
+  float px = x_[0];
+  float py = x_[1];
+  float vx = x_[2];
+  float vy = x_[3];
+  float px2 = px * px;
+  float py2 = py * py;
+  double rho = sqrt( px2 + py2 );
+  double theta = atan2( py, px );
+  double rho_dot = ( px*vx + py*vy ) / rho;
   VectorXd h = VectorXd(3); // h(x_)
 
   h << rho, theta, rho_dot;
   
   VectorXd y = z - h;
+
+  // normalize angles
+  while (y(1) > M_PI) {
+    y(1) -= 2. * M_PI;
+  } 
+
+  while (y(1) < -M_PI) {
+    y(1) += 2. * M_PI;
+  }
 
 	kfe(y);
 }
@@ -69,3 +84,5 @@ void KalmanFilter::kfe(const VectorXd &y) {
 
   P_ = (I - K * H_) * P_;
 }
+
+
