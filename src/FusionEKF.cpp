@@ -36,25 +36,21 @@ FusionEKF::FusionEKF() {
     * Finish initializing the FusionEKF.
     * Set the process and measurement noises
   */
+  VectorXd x_ = VectorXd(4);
+  MatrixXd P_ = MatrixXd::Identity(4, 4);
+  MatrixXd F_ = MatrixXd(4, 4);
+  MatrixXd Q_ = MatrixXd(4, 4);
+
+  x_ << 1, 1, 1, 1;
+  F_ << 1, 0, 1, 0,
+        0, 1, 0, 1,
+        0, 0, 1, 0,
+        0, 0, 0, 1;
   H_laser_ << 1, 0, 0, 0,
 			        0, 1, 0, 0;
-  ekf_.x_ = VectorXd(4);
-  ekf_.F_ = MatrixXd(4, 4);
-  ekf_.F_ << 1, 0, 1, 0,
-             0, 1, 0, 1,
-             0, 0, 1, 0,
-             0, 0, 0, 1;
-
-  ekf_.P_ = MatrixXd(4, 4);
-  ekf_.P_ << 1, 0, 0, 0,
-             0, 1, 0, 0,
-             0, 0, 1000, 0,
-             0, 0, 0, 1000;
-
-  ekf_.Q_ = MatrixXd(4, 4);
-
-  noise_ax_ = 9;
-  noise_ay_ = 9;
+  ekf_.Init(x_, P_, F_, H_laser_, R_laser_, Q_);
+  noise_ax_ = 145;
+  noise_ay_ = 145;
 }
 
 /**
